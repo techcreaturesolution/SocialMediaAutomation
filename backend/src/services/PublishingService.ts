@@ -28,7 +28,7 @@ export class PublishingService {
           user,
           text: fullText,
           mediaPath: mediaUrl,
-          mediaType: content.contentType as 'image' | 'video',
+          mediaType: (['video', 'reel'].includes(content.contentType) ? 'video' : 'image') as 'image' | 'video',
           title: content.title,
           hashtags,
         });
