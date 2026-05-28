@@ -1,4 +1,5 @@
 import cron from 'node-cron';
+import { CronExpressionParser } from 'cron-parser';
 import { Schedule } from '../models/Schedule';
 import { Content } from '../models/Content';
 import { User } from '../models/User';
@@ -108,11 +109,9 @@ export class SchedulerService {
 
   private getNextCronRun(cronExpression: string): Date | null {
     try {
-      const interval = cron.validate(cronExpression);
-      if (!interval) return null;
-      const next = new Date();
-      next.setMinutes(next.getMinutes() + 1);
-      return next;
+      if (!cron.validate(cronExpression)) return null;
+      const expression = CronExpressionParser.parse(cronExpression);
+      return expression.next().toDate();
     } catch {
       return null;
     }

@@ -11,6 +11,7 @@ import { logger } from '../utils/logger';
 import { Platform, Language } from '../types';
 
 export const generateContent = async (req: AuthRequest, res: Response): Promise<void> => {
+  let contentId: string | null = null;
   try {
     const user = req.user!;
     const {
@@ -31,6 +32,7 @@ export const generateContent = async (req: AuthRequest, res: Response): Promise<
       isAd: isAd || false,
     });
     await content.save();
+    contentId = content._id.toString();
 
     let aiResult;
     if (isAd && adSettings) {
@@ -233,6 +235,9 @@ export const generateContent = async (req: AuthRequest, res: Response): Promise<
       },
     });
   } catch (error) {
+    if (contentId) {
+      await Content.findByIdAndUpdate(contentId, { status: 'failed' });
+    }
     logger.error('Content generation failed:', error);
     res.status(500).json({ error: 'Failed to generate content' });
   }

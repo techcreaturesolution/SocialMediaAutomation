@@ -38,7 +38,7 @@ const userSchema = new Schema<IUser>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6 },
     name: { type: String, required: true, trim: true },
-    role: { type: String, enum: ['admin', 'user'], default: 'admin' },
+    role: { type: String, enum: ['admin', 'user'], default: 'user' },
     companyBranding: {
       name: { type: String, default: '' },
       logoUrl: { type: String, default: '' },

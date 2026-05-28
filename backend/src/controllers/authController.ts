@@ -155,6 +155,11 @@ export const disconnectSocialAccount = async (req: AuthRequest, res: Response): 
     const user = req.user!;
     const { platform } = req.params;
 
+    if (!['facebook', 'instagram', 'twitter', 'linkedin', 'youtube'].includes(platform)) {
+      res.status(400).json({ error: 'Invalid platform' });
+      return;
+    }
+
     const socialAccounts = user.socialAccounts as Record<string, unknown>;
     socialAccounts[platform] = undefined;
     user.socialAccounts = socialAccounts as typeof user.socialAccounts;
