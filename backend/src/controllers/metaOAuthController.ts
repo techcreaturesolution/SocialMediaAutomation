@@ -1,9 +1,29 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
+import crypto from 'crypto';
 import { AuthRequest } from '../middleware/auth';
 import { config } from '../config/env';
 import { User } from '../models/User';
 import { logger } from '../utils/logger';
+
+function signState(payload: Record<string, string>): string {
+  const data = JSON.stringify(payload);
+  const signature = crypto.createHmac('sha256', config.jwtSecret).update(data).digest('hex');
+  return Buffer.from(JSON.stringify({ data, signature })).toString('base64');
+}
+
+function verifyState(state: string): Record<string, string> | null {
+  try {
+    const parsed = JSON.parse(Buffer.from(state, 'base64').toString());
+    const expectedSig = crypto.createHmac('sha256', config.jwtSecret).update(parsed.data).digest('hex');
+    if (!crypto.timingSafeEqual(Buffer.from(parsed.signature, 'hex'), Buffer.from(expectedSig, 'hex'))) {
+      return null;
+    }
+    return JSON.parse(parsed.data);
+  } catch {
+    return null;
+  }
+}
 
 const GRAPH_API_URL = 'https://graph.facebook.com/v19.0';
 
@@ -25,7 +45,7 @@ const META_PERMISSIONS = [
 export const getMetaLoginUrl = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const userId = req.user!._id.toString();
-    const state = Buffer.from(JSON.stringify({ userId })).toString('base64');
+    const state = signState({ userId });
 
     const params = new URLSearchParams({
       client_id: config.meta.appId,
@@ -49,7 +69,7 @@ export const metaOAuthCallback = async (req: Request, res: Response): Promise<vo
 
     if (oauthError) {
       logger.error('Meta OAuth error:', oauthError);
-      res.redirect(`${config.frontendUrl}/settings?meta_error=${oauthError}`);
+      res.redirect(`${config.frontendUrl}/settings?meta_error=${encodeURIComponent(String(oauthError))}`);
       return;
     }
 
@@ -58,7 +78,12 @@ export const metaOAuthCallback = async (req: Request, res: Response): Promise<vo
       return;
     }
 
-    const stateData = JSON.parse(Buffer.from(state as string, 'base64').toString());
+    const stateData = verifyState(state as string);
+    if (!stateData || !stateData.userId) {
+      logger.error('Meta OAuth: invalid or forged state parameter');
+      res.redirect(`${config.frontendUrl}/settings?meta_error=invalid_state`);
+      return;
+    }
     const userId = stateData.userId;
 
     const tokenResponse = await axios.get(`${GRAPH_API_URL}/oauth/access_token`, {
