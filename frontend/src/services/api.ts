@@ -67,6 +67,14 @@ export const contentAPI = {
     api.post('/content/translate', data),
 };
 
+export const metaAPI = {
+  getLoginUrl: () => api.get('/meta/login'),
+  getPages: () => api.get('/meta/pages'),
+  selectPage: (pageId: string) => api.post('/meta/select-page', { pageId }),
+  refreshToken: () => api.post('/meta/refresh-token'),
+  disconnect: () => api.delete('/meta/disconnect'),
+};
+
 export const scheduleAPI = {
   getAll: (params?: { status?: string; page?: number; limit?: number }) =>
     api.get('/schedules', { params }),
