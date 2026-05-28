@@ -12,6 +12,7 @@
 - **Multi-Language Support** — 30+ languages including Hindi, Tamil, Telugu, Bengali, etc.
 
 ### Social Media Publishing
+- **Meta Business Suite** — One-click OAuth to connect Facebook Pages & Instagram Business accounts
 - **Facebook** — Pages, photos, videos, carousel posts
 - **Instagram** — Posts, reels, stories, carousels
 - **Twitter/X** — Tweets, threads, media upload
@@ -150,6 +151,16 @@ npm start
 | PUT | `/api/auth/profile` | Update profile & branding |
 | POST | `/api/auth/social/connect` | Connect social account |
 | DELETE | `/api/auth/social/:platform` | Disconnect social account |
+
+### Meta Business (Facebook & Instagram OAuth)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/meta/login` | Get Meta OAuth login URL |
+| GET | `/api/meta/callback` | OAuth callback (handles token exchange) |
+| GET | `/api/meta/pages` | List connected Facebook Pages & IG accounts |
+| POST | `/api/meta/select-page` | Select active page for publishing |
+| POST | `/api/meta/refresh-token` | Refresh long-lived token |
+| DELETE | `/api/meta/disconnect` | Disconnect Meta Business |
 
 ### Content
 | Method | Endpoint | Description |

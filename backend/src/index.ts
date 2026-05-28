@@ -13,6 +13,7 @@ import { schedulerService } from './services/SchedulerService';
 import authRoutes from './routes/authRoutes';
 import contentRoutes from './routes/contentRoutes';
 import scheduleRoutes from './routes/scheduleRoutes';
+import metaRoutes from './routes/metaRoutes';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api/auth', authRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/schedules', scheduleRoutes);
+app.use('/api/meta', metaRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({

@@ -74,6 +74,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
           linkedin: !!user.socialAccounts.linkedin?.accessToken,
           youtube: !!user.socialAccounts.youtube?.accessToken,
         },
+        metaConnected: !!user.metaConnection?.userAccessToken,
         preferences: user.preferences,
       },
     });
@@ -99,6 +100,7 @@ export const getProfile = async (req: AuthRequest, res: Response): Promise<void>
         linkedin: !!user.socialAccounts.linkedin?.accessToken,
         youtube: !!user.socialAccounts.youtube?.accessToken,
       },
+      metaConnected: !!user.metaConnection?.userAccessToken,
       preferences: user.preferences,
     });
   } catch (error) {

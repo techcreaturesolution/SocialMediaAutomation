@@ -29,6 +29,22 @@ export interface IUser extends Document {
     autoPublish: boolean;
     defaultPlatforms: string[];
   };
+  metaConnection?: {
+    userAccessToken: string;
+    tokenExpiresAt: Date;
+    pages: Array<{
+      pageId: string;
+      pageName: string;
+      pageAccessToken: string;
+      category: string;
+      instagramBusinessAccount?: {
+        id: string;
+        username: string;
+        profilePictureUrl: string;
+      };
+    }>;
+    connectedAt: Date;
+  };
   isActive: boolean;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -78,6 +94,22 @@ const userSchema = new Schema<IUser>(
       defaultTone: { type: String, default: 'professional' },
       autoPublish: { type: Boolean, default: false },
       defaultPlatforms: [{ type: String }],
+    },
+    metaConnection: {
+      userAccessToken: String,
+      tokenExpiresAt: Date,
+      pages: [{
+        pageId: String,
+        pageName: String,
+        pageAccessToken: String,
+        category: String,
+        instagramBusinessAccount: {
+          id: String,
+          username: String,
+          profilePictureUrl: String,
+        },
+      }],
+      connectedAt: Date,
     },
     isActive: { type: Boolean, default: true },
   },

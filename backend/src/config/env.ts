@@ -24,6 +24,12 @@ export const config = {
     appSecret: process.env.FACEBOOK_APP_SECRET || '',
   },
 
+  meta: {
+    appId: process.env.META_APP_ID || process.env.FACEBOOK_APP_ID || '',
+    appSecret: process.env.META_APP_SECRET || process.env.FACEBOOK_APP_SECRET || '',
+    redirectUri: process.env.META_REDIRECT_URI || 'http://localhost:5000/api/meta/callback',
+  },
+
   twitter: {
     apiKey: process.env.TWITTER_API_KEY || '',
     apiSecret: process.env.TWITTER_API_SECRET || '',
